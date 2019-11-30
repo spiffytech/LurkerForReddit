@@ -1,4 +1,5 @@
 <script>
+  import unescape from 'lodash/unescape';
   import { onMount } from "svelte";
 
   import CommentPreview from './CommentPreview.svelte';
@@ -57,7 +58,7 @@
       {#if article.preview && article.preview.enabled && article.preview.images.length}
         <img
           class="rounded-lg"
-          src={visible ? article.preview.images[0].resolutions[article.preview.images[0].resolutions.length- 1].url.replace('&amp;', '&') : null}
+          src={visible ? unescape(article.preview.images[0].resolutions[article.preview.images[0].resolutions.length- 1].url) : null}
           alt={article.title} />
       {:else if article.thumbnail !== 'self'}
         <img src={visible ? article.thumbnail : null} alt={article.title} />
