@@ -20,4 +20,14 @@ export function getEmbedType(data) {
   if (data.post_hint === 'image') return 'image';
   else if (data.post_hint === 'link') return 'link';
   else if (data.selftext) return 'self';
+  else if (data.post_hint === 'hosted:video') return 'video';
+}
+
+/**
+ * @param {string} subreddit
+ * @param {string} id
+ */
+export async function getComments(subreddit, id) {
+  const response = await axios.get(`https://www.reddit.com/r/${subreddit}/comments/${id}/.json`);
+  return { comments: response.data[1].data.children };
 }

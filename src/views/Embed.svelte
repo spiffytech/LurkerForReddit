@@ -9,7 +9,9 @@
 {#if embedType === 'image'}
   <img src={article.url} alt={article.title} />
 {:else if embedType === 'self'}
-  <p>{article.selftext}</p>
+  <p class="bg-white rounded-lg p-3">{article.selftext}</p>
 {:else if embedType === 'link'}
-  <a href={article.url}>{article.title}</a>
+  <a href={article.url} target="blank">🌎{article.title}</a>
+{:else if embedType === 'video'}
+  <video src={article.media.reddit_video.fallback_url} autoplay loop controls />
 {/if}
