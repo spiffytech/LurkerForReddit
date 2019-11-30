@@ -31,7 +31,10 @@
       page("/");
     });
   } else {
-	  accessToken = redditAuth.retrieveAccessToken();
+    accessToken = redditAuth.retrieveAccessToken();
+    if (!accessToken.token) {
+      window.location.href = 'https://www.reddit.com/api/v1/authorize?client_id=yswjAIdT1IQwmA&state=0.24722490017302334&redirect_uri=http://localhost:8080&response_type=code&scope=identity history mysubreddits read save submit subscribe vote&duration=permanent'
+    }
   }
 
 $: setContext("accessToken", accessToken);

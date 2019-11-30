@@ -15,3 +15,9 @@ export async function get(path, token) {
 
     return response.data.data;
 }
+
+export function getEmbedType(data) {
+  if (data.post_hint === 'image') return 'image';
+  else if (data.post_hint === 'link') return 'link';
+  else if (data.selftext) return 'self';
+}

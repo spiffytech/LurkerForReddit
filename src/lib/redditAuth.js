@@ -16,7 +16,7 @@ export async function handleAuthUrl(url) {
   const authResponse = fromPairs(query.split("&").map(kv => kv.split("=")));
 
   console.log('authresponse', authResponse);
-  const response = await axios.post('https://www.reddit.com/api/v1/access_token', `grant_type=authorization_code&code=${authResponse.code}&redirect_uri=https://websnoo-x4gq.localhost.run`, {auth: {username: 'yswjAIdT1IQwmA', password: ''}})
+  const response = await axios.post('https://www.reddit.com/api/v1/access_token', `grant_type=authorization_code&code=${authResponse.code}&redirect_uri=http://localhost:8080`, {auth: {username: 'yswjAIdT1IQwmA', password: ''}})
   console.log(response.data)
   if (response.data.error) throw new Error(response.data.error);
   localStorage.setItem("accessToken", response.data.access_token);
@@ -38,9 +38,13 @@ export function retrieveAccessToken() {
 }
 
 /**
- * @param {{refreshToken: string}} token
+ * @param {{token: string; expires: number; refreshToken: string}} token
  */
 export async function refreshToken(token) {
   const response = await axios.post('https://www.reddit.com/api/v1/access_token', `grant_type=refresh_token&refresh_token=${token.refreshToken}`, {auth: {username: 'yswjAIdT1IQwmA', password: ''}})
   console.log('Refreshed data:', response.data);
+  token.token = response.data.access_token;
+  token.expires = Date.now() + response.data.expires_in * 1000;
+  localStorage.setItem("accessToken", token.token);
+  localStorage.setItem("accessTokenExpires", token.expires.toString());
 }
