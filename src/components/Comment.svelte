@@ -11,4 +11,10 @@
   </header>
 
   {@html unescape(comment.data.body_html)}
+
+  {#if comment.data.replies}
+    {#each comment.data.replies.data.children as subcomment (subcomment.id)}
+      <svelte:self comment={subcomment} />
+    {/each}
+  {/if}
 </article>
