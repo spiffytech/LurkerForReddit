@@ -10,7 +10,7 @@
   export let onClick;
 
   let articleParent = null;
-  let visible = false;
+  let hasLoaded = false;
 
   let comments = [];
   let commentsLoaded = false;
@@ -26,7 +26,7 @@
 
   onMount(() => {
     const observer = new IntersectionObserver(entries => {
-      visible = entries[0].isIntersecting;
+      hasLoaded = hasLoaded || entries[0].isIntersecting;
       if (entries[0].isIntersecting && !commentsLoaded) loadComments();
     }, {root: null, rootMargin: "500px 0px 500px 0px"});
     observer.observe(articleParent);
@@ -58,10 +58,10 @@
       {#if article.preview && article.preview.enabled && article.preview.images.length}
         <img
           class="rounded-lg"
-          src={visible ? unescape(article.preview.images[0].resolutions[article.preview.images[0].resolutions.length- 1].url) : null}
+          src={hasLoaded ? unescape(article.preview.images[0].resolutions[article.preview.images[0].resolutions.length- 1].url) : null}
           alt={article.title} />
       {:else if article.thumbnail !== 'self'}
-        <img src={visible ? article.thumbnail : null} alt={article.title} />
+        <img src={hasLoaded ? article.thumbnail : null} alt={article.title} />
       {/if}
     </div>
     <p>{article.subreddit_name_prefixed}</p>
