@@ -2,7 +2,7 @@
   import { getContext, onMount } from "svelte";
 
   import Article from "../components/Article.svelte";
-  import Comment from '../components/Comment.svelte';
+  import Comment from "../components/Comment.svelte";
   import Embed from "./Embed.svelte";
 
   import * as libreddit from "../lib/reddit";
@@ -17,6 +17,7 @@
   let activeArticle = null;
   let comments = [];
 
+  let contentDiv = null;
   let footerParent = null;
 
   async function getHomepage() {
@@ -32,6 +33,7 @@
   function handleArticleClick(article, comments_) {
     activeArticle = article;
     comments = comments_;
+    contentDiv.scrollTop = 0;
     console.log(article);
   }
 
@@ -42,43 +44,56 @@
     });
     footerObserver.observe(footerParent);
 
-    const articleObserver = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        console.log('entry', entry);
-        visibleChildren = {
-          ...visibleChildren,
-          [entry.target.getAttribute("data-id")]: entry.isIntersecting
-        };
-      });
-    }, {root: null, rootMargin: '500px 0px 500px 0px'});
+    const articleObserver = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          console.log("entry", entry);
+          visibleChildren = {
+            ...visibleChildren,
+            [entry.target.getAttribute("data-id")]: entry.isIntersecting
+          };
+        });
+      },
+      { root: null, rootMargin: "500px 0px 500px 0px" }
+    );
     articleObserver.observe(articleParent);
   });
 </script>
 
 <div class="flex bg-gray-500">
-  <div class="p-3 h-screen overflow-auto" style="flex: 1 0 0;" bind:this={articleParent}>
+  <div
+    class="p-3 h-screen overflow-auto"
+    style="flex: 1 0 0; flex-basis: 400px;"
+    bind:this={articleParent}>
     {#if homepage.length === 0}
       <p>Loading homepage...</p>
     {:else}
-        {#each homepage as child (child.data.id)}
-          <div data-id={child.data.id}>
-            <Article
-              article={child.data}
-              onClick={(comments_) => handleArticleClick(child, comments_)}
-              visible={visibleChildren[child.data.id]} />
-          </div>
-        {/each}
+      {#each homepage as child (child.data.id)}
+        <div data-id={child.data.id}>
+          <Article
+            article={child.data}
+            onClick={comments_ => handleArticleClick(child, comments_)}
+            visible={visibleChildren[child.data.id]} />
+        </div>
+      {/each}
     {/if}
     <div bind:this={footerParent}>
       <div class="italic text-grey-500">Loading more content...</div>
     </div>
   </div>
 
-  <div style="flex: 2 0 0;" class="h-screen overflow-auto m-3">
+  <div
+    style="flex: 2 0 0;"
+    class="h-screen overflow-auto m-3"
+    bind:this={contentDiv}>
     {#if activeArticle}
-      <a href={`https://reddit.com${activeArticle.data.permalink}`} target="blank"><header class="text-lg">{activeArticle.data.title}</header></a>
+      <a
+        href={`https://reddit.com${activeArticle.data.permalink}`}
+        target="blank">
+        <header class="text-lg">{activeArticle.data.title}</header>
+      </a>
       <Embed article={activeArticle.data} />
-      
+
       {#each comments as comment (comment.data.id)}
         <Comment {comment} />
       {/each}
