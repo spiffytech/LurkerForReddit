@@ -1,5 +1,6 @@
 import axios from 'axios';
 import fromPairs from "lodash/fromPairs";
+import map from 'lodash/map';
 
 /**
  * @param {string} url
@@ -13,7 +14,10 @@ export function isAuthUrl(url) {
  */
 export async function handleAuthUrl(url) {
   const query = url.split("?")[1];
-  const authResponse = fromPairs(query.split("&").map(kv => kv.split("=")));
+  const authResponse = fromPairs(query.split("&").map(kv => {
+    const [k, v] = kv.split("=");
+    return [k, v.split('#')[0]];
+  }));
 
   console.log('authresponse', authResponse);
   const response = await axios.post('https://www.reddit.com/api/v1/access_token', `grant_type=authorization_code&code=${authResponse.code}&redirect_uri=https://websnoo.spiffy.tech`, {auth: {username: 'yswjAIdT1IQwmA', password: ''}})
