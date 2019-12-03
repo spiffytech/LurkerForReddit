@@ -18,8 +18,9 @@
   }
 
   page("/", setRoute(Home));
+  page("/r/:subreddit/:id", setRoute(Home));
   page("*", setRoute(FourOhFour));
-  page();
+  page({hashbang: true});
 
   const url = document.URL;
   let accessToken = null;

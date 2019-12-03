@@ -29,5 +29,5 @@ export function getEmbedType(data) {
  */
 export async function getComments(subreddit, id) {
   const response = await axios.get(`https://www.reddit.com/r/${subreddit}/comments/${id}/.json`);
-  return { comments: response.data[1].data.children };
+  return { article: response.data[0].data.children[0].data, comments: response.data[1].data.children };
 }

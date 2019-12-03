@@ -1,40 +1,40 @@
 <script>
+  import page from "page";
   import { getContext, onMount } from "svelte";
 
+  import FullArticle from "./FullArticle.svelte";
   import Article from "../components/Article.svelte";
-  import Comment from "../components/Comment.svelte";
-  import Embed from "./Embed.svelte";
+  import Dialog from "../components/Dialog.svelte";
+  import VisibilityGuard from "../components/VisibilityGuard.svelte";
 
   import * as libreddit from "../lib/reddit";
+  import { feed, scrollEnd } from "../lib/stores";
+
+  export let params;
 
   const accessToken = getContext("accessToken");
 
-  let homepage = [];
-  let after = null;
-  let articleParent = null;
-  let visibleChildren = {};
+  $: console.log(params);
 
-  let activeArticle = null;
-  let comments = [];
-
-  let contentDiv = null;
   let footerParent = null;
 
   async function getHomepage() {
     const response = await libreddit.get(
-      `?limit=25${after ? `&after=${after}` : ""}`,
+      `?limit=25${$scrollEnd ? `&after=${$scrollEnd}` : ""}`,
       accessToken
     );
-    homepage = [...homepage, ...response.children];
-    after = response.after;
-    console.log("homepage", homepage);
-  }
-
-  function handleArticleClick(article, comments_) {
-    activeArticle = article;
-    comments = comments_;
-    contentDiv.scrollTop = 0;
-    console.log(article);
+    console.log(
+      "readness",
+      response.children.map(article =>
+        localStorage.getItem(`read:${article.data.id}`)
+      )
+    );
+    const unreadEntries = response.children.filter(
+      article => localStorage.getItem(`read:${article.data.id}`) === null
+    );
+    // if (unreadEntries.length === 0) return getHomepage();
+    $feed = [...$feed, ...response.children];
+    $scrollEnd = response.after;
   }
 
   onMount(() => {
@@ -43,60 +43,28 @@
       if (entries[0].isIntersecting) getHomepage();
     });
     footerObserver.observe(footerParent);
-
-    const articleObserver = new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
-          console.log("entry", entry);
-          visibleChildren = {
-            ...visibleChildren,
-            [entry.target.getAttribute("data-id")]: entry.isIntersecting
-          };
-        });
-      },
-      { root: null, rootMargin: "500px 0px 500px 0px" }
-    );
-    articleObserver.observe(articleParent);
   });
 </script>
 
-<div class="flex bg-gray-500">
-  <div
-    class="p-3 h-screen overflow-auto"
-    style="flex: 1 0 0; flex-basis: 400px;"
-    bind:this={articleParent}>
-    {#if homepage.length === 0}
-      <p>Loading homepage...</p>
-    {:else}
-      {#each homepage as child (child.data.id)}
-        <div data-id={child.data.id}>
-          <Article
-            article={child.data}
-            onClick={comments_ => handleArticleClick(child, comments_)}
-            visible={visibleChildren[child.data.id]} />
-        </div>
-      {/each}
-    {/if}
-    <div bind:this={footerParent}>
-      <div class="italic text-grey-500">Loading more content...</div>
-    </div>
-  </div>
-
-  <div
-    style="flex: 2 0 0;"
-    class="h-screen overflow-auto m-3"
-    bind:this={contentDiv}>
-    {#if activeArticle}
-      <a
-        href={`https://reddit.com${activeArticle.data.permalink}`}
-        target="blank">
-        <header class="text-lg">{activeArticle.data.title}</header>
+<div class="flex">
+<div class="bg-gray-500 flex-1 h-screen overflow-scroll p-3">
+  {#if $feed.length === 0}
+    <p>Loading homepage...</p>
+  {:else}
+    {#each $feed as child (child.data.id)}
+      <a href={`#!r/${child.data.subreddit}/${child.data.id}`}>
+        <Article article={child.data} />
       </a>
-      <Embed article={activeArticle.data} />
-
-      {#each comments as comment (comment.data.id)}
-        <Comment {comment} />
-      {/each}
-    {/if}
+    {/each}
+  {/if}
+  <div bind:this={footerParent}>
+    <div class="italic text-grey-500">Loading more content...</div>
   </div>
+</div>
+
+<div class="flex-1 h-screen overflow-scroll p-3 bg-gray-500">
+  {#if params.params.id}
+    <FullArticle articleId={params.params.id} subreddit={params.params.subreddit} />
+  {/if}
+</div>
 </div>

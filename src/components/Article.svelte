@@ -7,7 +7,6 @@
   import * as libreddit from "../lib/reddit";
 
   export let article;
-  export let onClick;
 
   let articleParent = null;
   let hasLoaded = false;
@@ -27,10 +26,14 @@
   onMount(() => {
     const observer = new IntersectionObserver(entries => {
       hasLoaded = hasLoaded || entries[0].isIntersecting;
-      if (entries[0].isIntersecting && !commentsLoaded) loadComments();
+      if (entries[0].isIntersecting && !commentsLoaded) {
+        localStorage.setItem(`read:${article.id}`, JSON.stringify(true));
+      }
     }, {root: null, rootMargin: "500px 0px 500px 0px"});
     observer.observe(articleParent);
   });
+
+  loadComments();
 
   $: console.log("comments", comments);
 </script>
@@ -44,7 +47,6 @@
 
 <article
   class="flex-100 flex flex-col justify-end mb-3"
-  on:click={() => onClick(comments)}
   bind:this={articleParent}>
   <header class="border rounded-lg p-2 bg-white">
     <p class="flex justify-between">
