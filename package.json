@@ -26,6 +26,7 @@
     "axios": "^0.19.0",
     "dialog-polyfill": "^0.5.0",
     "lodash": "^4.17.15",
-    "page": "^1.11.5"
+    "page": "^1.11.5",
+    "querystring": "^0.2.0"
   }
 }
