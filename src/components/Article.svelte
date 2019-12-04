@@ -23,6 +23,13 @@
     commentsLoaded = true;
   }
 
+  function getPreview() {
+    if (!article.preview || !article.preview.enabled || !article.preview.images.length) return;
+    const resolutions = article.preview.images[0].resolutions;
+    if (resolutions.length === 0) return article.preview.images[0].source.url;
+    return resolutions[resolutions.length - 1].url;
+  }
+
   onMount(() => {
     const observer = new IntersectionObserver(entries => {
       hasLoaded = hasLoaded || entries[0].isIntersecting;
@@ -36,6 +43,11 @@
   loadComments();
 
   $: console.log("comments", comments);
+
+  if (article.preview && !article.preview.images[0].resolutions.length)
+    console.log(article.preview.images[0]);
+
+  if (!getPreview()) console.log('thumbnail', article.thumbnail);
 </script>
 
 <style>
@@ -57,13 +69,15 @@
     </p>
     <p class="text-gray-500 text-xs">({article.domain})</p>
     <div class="mt-2">
-      {#if article.preview && article.preview.enabled && article.preview.images.length}
-        <img
-          class="rounded-lg"
-          src={hasLoaded ? unescape(article.preview.images[0].resolutions[article.preview.images[0].resolutions.length- 1].url) : null}
-          alt={article.title} />
-      {:else if article.thumbnail !== 'self'}
-        <img src={hasLoaded ? article.thumbnail : null} alt={article.title} />
+      {#if hasLoaded}
+        {#if getPreview()}
+          <img
+            class="rounded-lg"
+            src={unescape(getPreview())}
+            alt={article.title} />
+        {:else if article.thumbnail !== 'self'}
+          <img src={article.thumbnail} alt={article.title} />
+        {/if}
       {/if}
     </div>
     <p>{article.subreddit_name_prefixed}</p>
