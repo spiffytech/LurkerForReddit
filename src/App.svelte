@@ -24,13 +24,27 @@
 
   const url = document.URL;
   let accessToken = null;
-  if (redditAuth.isAuthUrl(url)) {
-    redditAuth.handleAuthUrl(url).then(() => {
+  let error = null;
+
+  async function handleAuthUrl(url) {
+    try {
+      await redditAuth.handleAuthUrl(url);
+    } catch (ex) {
+      if (ex.message === 'Network Error') {
+        error = 'Call to Reddit was blocked. Do you have tracking protection on?'
+      } else {
+        error = ex.message;
+      }
+      return;
+    }
 		const access_token = redditAuth.retrieveAccessToken();
-		console.log('Received', access_token)
-      accessToken = access_token;
-      page("/");
-    });
+		console.log('Received', access_token);
+    accessToken = access_token;
+    page("/");
+  }
+
+  if (redditAuth.isAuthUrl(url)) {
+    handleAuthUrl(url);
   } else {
     accessToken = redditAuth.retrieveAccessToken();
     if (!accessToken.token) {
@@ -41,8 +55,12 @@
 $: setContext("accessToken", accessToken);
 </script>
 
-{#if accessToken && component}
-  <svelte:component this={component} {params} />
+{#if error}
+  <p>{error}</p>
 {:else}
-  <p>Loading the app...</p>
+  {#if accessToken && component}
+    <svelte:component this={component} {params} />
+  {:else}
+    <p>Loading the app...</p>
+  {/if}
 {/if}
