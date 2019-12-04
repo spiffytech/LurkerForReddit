@@ -34,7 +34,7 @@
   } else {
     accessToken = redditAuth.retrieveAccessToken();
     if (!accessToken.token) {
-      window.location.href = 'https://www.reddit.com/api/v1/authorize?client_id=yswjAIdT1IQwmA&state=0.24722490017302334&redirect_uri=https://websnoo.spiffy.tech&response_type=code&scope=identity history mysubreddits read save submit subscribe vote&duration=permanent'
+      window.location.href = `https://www.reddit.com/api/v1/authorize?client_id=${process.env.REDDIT_APP_ID}&state=0.24722490017302334&redirect_uri=${process.env.APP_URL}&response_type=code&scope=identity history mysubreddits read save submit subscribe vote&duration=permanent`
     }
   }
 

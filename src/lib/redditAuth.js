@@ -20,7 +20,7 @@ export async function handleAuthUrl(url) {
   }));
 
   console.log('authresponse', authResponse);
-  const response = await axios.post('https://www.reddit.com/api/v1/access_token', `grant_type=authorization_code&code=${authResponse.code}&redirect_uri=https://websnoo.spiffy.tech`, {auth: {username: 'yswjAIdT1IQwmA', password: ''}})
+  const response = await axios.post('https://www.reddit.com/api/v1/access_token', `grant_type=authorization_code&code=${authResponse.code}&redirect_uri=${process.env.APP_URL}`, {auth: {username: process.env.REDDIT_APP_ID || '', password: ''}})
   console.log(response.data)
   if (response.data.error) throw new Error(response.data.error);
   localStorage.setItem("accessToken", response.data.access_token);
