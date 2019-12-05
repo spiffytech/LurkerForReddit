@@ -1,6 +1,7 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const Dotenv = require('dotenv-webpack');
 const path = require('path');
+const webpack = require('webpack');
 
 const mode = process.env.NODE_ENV || 'development';
 const prod = mode === 'production';
@@ -51,6 +52,7 @@ module.exports = {
 		new MiniCssExtractPlugin({
 			filename: '[name].css'
 		}),
+        new webpack.EnvironmentPlugin(['REDDIT_APP_ID', 'APP_URL']),
 		new Dotenv()
 	],
 	devtool: prod ? false: 'source-map'
