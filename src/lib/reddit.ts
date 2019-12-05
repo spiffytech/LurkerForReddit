@@ -3,7 +3,9 @@ import * as querystring from "querystring";
 
 import * as redditAuth from "./redditAuth";
 
-interface Article {
+export interface Article {
+  id: string;
+  title: string;
   post_hint: string | null;
   selftext: string | null;
 }
@@ -75,7 +77,7 @@ export function mkReddit(
         authToken
       );
 
-      return { articles: response.children, lastSeenId: response.after };
+      return { articles: response.children.map(({data}: {data: any}) => data), lastSeenId: response.after };
     },
 
     vote(fullName: string, dir: -1 | 0 | 1) {

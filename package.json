@@ -17,13 +17,17 @@
     "react-dom": "^16.12.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.3.0",
+    "tailwindcss": "^1.1.4",
     "typescript": "^3.7.3"
   },
   "scripts": {
+    "prebuild": "npm run tailwind",
+    "prestart": "npm run tailwind",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "tailwind": "tailwind build src/tailwind.css -o src/global.css"
   },
   "eslintConfig": {
     "extends": "react-app"

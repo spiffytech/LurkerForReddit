@@ -3,6 +3,8 @@
 .env
 websnoo-svelte
 
+src/global.css
+
 # dependencies
 /node_modules
 /.pnp

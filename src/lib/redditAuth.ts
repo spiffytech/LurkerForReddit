@@ -60,9 +60,8 @@ export async function refreshToken(token: AuthToken) {
   const response = await axios.post(
     "https://www.reddit.com/api/v1/access_token",
     `grant_type=refresh_token&refresh_token=${token.refreshToken}`,
-    { auth: { username: "yswjAIdT1IQwmA", password: "" } }
+    { auth: { username: process.env.REACT_APP_REDDIT_APP_ID!, password: "" } }
   );
-  console.log("Refreshed data:", response.data);
   token.token = response.data.access_token;
   token.expires = Date.now() + response.data.expires_in * 1000;
   localStorage.setItem("accessToken", token.token);
@@ -83,6 +82,8 @@ export function useRedditAuth(onAuth: () => void) {
 
   React.useEffect(() => {
     async function effectFn() {
+      if (isTokenExpired) debug('Token is expired or null');
+
       if (isAuthUrl(window.location.href)) {
         debug('Handling auth URL');
         try {
@@ -98,11 +99,21 @@ export function useRedditAuth(onAuth: () => void) {
         }
       }
 
+      if (authToken) {
+        debug('No need to retrieve auth token');
+        return;
+      }
       const token = retrieveAccessToken();
       if (!token) {
         debug('Redirecting to Reddit to authenticate');
         window.location.href = `https://www.reddit.com/api/v1/authorize?client_id=${process.env.REACT_APP_REDDIT_APP_ID}&state=0.24722490017302334&redirect_uri=${process.env.REACT_APP_APP_URL}&response_type=code&scope=identity history mysubreddits read save submit subscribe vote&duration=permanent`;
         return;
+      }
+      debug('Retrieved auth token from LocalStorage');
+
+      if (isTokenExpired) {
+        debug('Refreshing token');
+        await refreshToken(token);
       }
 
       setAuthToken(token);
@@ -110,7 +121,7 @@ export function useRedditAuth(onAuth: () => void) {
     }
 
     effectFn();
-  }, [isTokenExpired]);
+  }, [isTokenExpired, onAuth, authToken]);
 
   return { reddit, redditError };
 }
