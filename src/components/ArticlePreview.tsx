@@ -8,6 +8,18 @@ interface ArticlePreviewProps {
   reddit: ReturnType<typeof libreddit.mkReddit>;
 }
 
+function getPreview(article: libreddit.Article) {
+  if (
+    !article.preview ||
+    !article.preview.enabled ||
+    !article.preview.images.length
+  )
+    return;
+  const resolutions = article.preview.images[0].resolutions;
+  if (resolutions.length === 0) return article.preview.images[0].source.url;
+  return resolutions[resolutions.length - 1].url;
+}
+
 const ArticlePreview: React.FC<ArticlePreviewProps> = ({ article, reddit }) => {
   const [comments, setComments] = React.useState<libreddit.Comment[]>([]);
 
@@ -30,7 +42,24 @@ const ArticlePreview: React.FC<ArticlePreviewProps> = ({ article, reddit }) => {
         <span className="whitespace-no-wrap float-right ml-3">
           {article.score} / {article.num_comments}
         </span>
-        <header className="text-xl">{article.title}</header>
+        <header className="text-xl">{unescape(article.title)}</header>
+
+        <div>
+          {getPreview(article) ? (
+            <img
+              className="rounded-lg w-full h-auto"
+              src={unescape(getPreview(article))}
+            />
+          ) : article.thumbnail === "self" && article.selftext ? (
+            <p
+              dangerouslySetInnerHTML={{
+                __html: unescape(article.selftext).slice(0, 140).trim() + (unescape(article.selftext).length > 140 ? '...' : '')
+              }}
+            />
+          ) : (
+            <img className="w-full h-auto" src={article.thumbnail} />
+          )}
+        </div>
 
         <p className="text-gray-500 text-xs flex justify-between">
           <a

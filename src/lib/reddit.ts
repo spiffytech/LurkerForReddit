@@ -15,7 +15,12 @@ export interface Article {
   selftext: string | null;
   subreddit: string;
   subreddit_name_prefixed: string;
+  thumbnail: string;
   url: string | null;
+  preview: {
+    enabled: boolean;
+    images: { resolutions: { url: string }[]; source: { url: string } }[];
+  } | null;
 }
 
 export interface Comment {
@@ -65,13 +70,18 @@ export function getEmbedType(data: Article) {
   else if (data.post_hint === "hosted:video") return "video";
 }
 
-export async function getComments(subreddit: string, id: string): Promise<Comments> {
+export async function getComments(
+  subreddit: string,
+  id: string
+): Promise<Comments> {
   const response = await axios.get(
     `https://www.reddit.com/r/${subreddit}/comments/${id}/.json`
   );
   return {
     article: response.data[0].data.children[0].data as Article,
-    comments: response.data[1].data.children.map(({data}: {data: any}) => data)
+    comments: response.data[1].data.children.map(
+      ({ data }: { data: any }) => data
+    )
   };
 }
 
@@ -93,11 +103,16 @@ export function mkReddit(
       lastSeenId: string | null = null
     ): Promise<{ articles: Article[]; lastSeenId: string }> {
       const response = await get(
-        `${subreddit ? `/r/${subreddit}` : ''}.json?limit=25${lastSeenId ? `&after=${lastSeenId}` : ""}`,
+        `${subreddit ? `/r/${subreddit}` : ""}.json?limit=25${
+          lastSeenId ? `&after=${lastSeenId}` : ""
+        }`,
         authToken
       );
 
-      return { articles: response.children.map(({data}: {data: any}) => data), lastSeenId: response.after };
+      return {
+        articles: response.children.map(({ data }: { data: any }) => data),
+        lastSeenId: response.after
+      };
     },
 
     getComments(subreddit: string, id: string) {
