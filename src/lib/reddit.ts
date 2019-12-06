@@ -5,9 +5,29 @@ import * as redditAuth from "./redditAuth";
 
 export interface Article {
   id: string;
+  domain: string;
+  name: string;
+  score: number;
+  num_comments: number;
   title: string;
+  permalink: string;
   post_hint: string | null;
   selftext: string | null;
+  subreddit: string;
+  subreddit_name_prefixed: string;
+  url: string | null;
+}
+
+export interface Comment {
+  body_html: string;
+  author: string;
+  id: string;
+  score: number;
+}
+
+export interface Comments {
+  article: Article;
+  comments: Comment[];
 }
 
 export async function get(path: string, token: redditAuth.AuthToken) {
@@ -45,13 +65,13 @@ export function getEmbedType(data: Article) {
   else if (data.post_hint === "hosted:video") return "video";
 }
 
-export async function getComments(subreddit: string, id: string) {
+export async function getComments(subreddit: string, id: string): Promise<Comments> {
   const response = await axios.get(
     `https://www.reddit.com/r/${subreddit}/comments/${id}/.json`
   );
   return {
-    article: response.data[0].data.children[0].data,
-    comments: response.data[1].data.children
+    article: response.data[0].data.children[0].data as Article,
+    comments: response.data[1].data.children.map(({data}: {data: any}) => data)
   };
 }
 
@@ -78,6 +98,10 @@ export function mkReddit(
       );
 
       return { articles: response.children.map(({data}: {data: any}) => data), lastSeenId: response.after };
+    },
+
+    getComments(subreddit: string, id: string) {
+      return getComments(subreddit, id);
     },
 
     vote(fullName: string, dir: -1 | 0 | 1) {

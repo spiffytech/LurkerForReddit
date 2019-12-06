@@ -2,6 +2,8 @@ import * as React from "react";
 
 import { Article, mkReddit } from "../lib/reddit";
 
+import ArticlePreview from '../components/ArticlePreview';
+
 interface HomeProps {
   reddit: ReturnType<typeof mkReddit>;
 }
@@ -29,17 +31,18 @@ const Home: React.FC<HomeProps> = ({ reddit }) => {
     return () => observer.unobserve(footerEl);
   }, [reddit, articles, lastSeenId, footerRef]);
 
-
   return (
-    <>
+    <div className="flex flex-col items-center">
       {articles.length === 0 ? <p>Loading feed...</p> : null}
 
       {articles.map(article => (
-        <p key={article.id}>{article.title}</p>
+        <div key={article.id} className="w-6/12 mb-5">
+          <ArticlePreview key={article.id} article={article} reddit={reddit} />
+        </div>
       ))}
 
       <p ref={footerRef}>Loading more items...</p>
-    </>
+    </div>
   );
 };
 export default Home;

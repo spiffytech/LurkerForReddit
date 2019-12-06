@@ -8,13 +8,15 @@ import Home from './views/Home';
 
 const App: React.FC = () => {
   return (
-    <Router>
-      <Switch>
-        <Route path='/'>
-          <AuthedZone component={Home} />
-        </Route>
-      </Switch>
-    </Router>
+    <main className="bg-gray-500 h-screen overflow-auto">
+      <Router>
+        <Switch>
+          <Route path='/'>
+            <AuthedZone component={Home} />
+          </Route>
+        </Switch>
+      </Router>
+    </main>
   );
 }
 
