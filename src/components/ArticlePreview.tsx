@@ -1,5 +1,6 @@
 import unescape from "lodash/unescape";
 import * as React from "react";
+import { Link } from "react-router-dom";
 
 import * as libreddit from "../lib/reddit";
 
@@ -37,58 +38,60 @@ const ArticlePreview: React.FC<ArticlePreviewProps> = ({ article, reddit }) => {
   }, [article.id, article.subreddit, reddit]);
 
   return (
-    <article>
-      <div className="bg-white rounded-lg p-2">
-        <span className="whitespace-no-wrap float-right ml-3">
-          {article.score} / {article.num_comments}
-        </span>
-        <header className="text-xl">{unescape(article.title)}</header>
+    <Link style={{ display: "contents" }} to={`/r/${article.subreddit}/${article.id}`}>
+      <article>
+        <div className="bg-white rounded-lg p-2">
+          <span className="whitespace-no-wrap float-right ml-3">
+            {article.score} / {article.num_comments}
+          </span>
+          <header className="text-xl">{unescape(article.title)}</header>
 
-        <div>
-          {getPreview(article) ? (
-            <img
-              className="rounded-lg w-full h-auto"
-              src={unescape(getPreview(article))}
-            />
-          ) : article.thumbnail === "self" && article.selftext ? (
-            <p
-              dangerouslySetInnerHTML={{
-                __html: unescape(article.selftext).slice(0, 140).trim() + (unescape(article.selftext).length > 140 ? '...' : '')
-              }}
-            />
-          ) : (
-            <img className="w-full h-auto" src={article.thumbnail} />
-          )}
+          <div>
+            {getPreview(article) ? (
+              <img
+                className="rounded-lg w-full h-auto"
+                src={unescape(getPreview(article))}
+              />
+            ) : article.thumbnail === "self" && article.selftext ? (
+              <p
+                dangerouslySetInnerHTML={{
+                  __html:
+                    unescape(article.selftext)
+                      .slice(0, 140)
+                      .trim() +
+                    (unescape(article.selftext).length > 140 ? "..." : "")
+                }}
+              />
+            ) : (
+              <img className="w-full h-auto" src={article.thumbnail} />
+            )}
+          </div>
+
+          <p className="text-gray-500 text-xs flex justify-between">
+            <span>{article.domain}</span>
+
+            <span>{article.subreddit_name_prefixed}</span>
+          </p>
         </div>
 
-        <p className="text-gray-500 text-xs flex justify-between">
-          <a
-            href={article.url || article.permalink}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {article.domain}
-          </a>
+        <section className="mx-3 bg-gray-300 rounded-b-lg">
+          {comments.slice(0, 2).map(comment => (
+            <article className="p-3" key={comment.id}>
+              <header className="flex justify-between text-gray-700 italic">
+                <span>{comment.author}</span>
+                <span>{comment.score}</span>
+              </header>
 
-          <span>{article.subreddit_name_prefixed}</span>
-        </p>
-      </div>
-
-      <section className="mx-3 bg-gray-300 rounded-b-lg">
-        {comments.slice(0, 2).map(comment => (
-          <article className="p-3" key={comment.id}>
-            <header className="flex justify-between text-gray-700 italic">
-              <span>{comment.author}</span>
-              <span>{comment.score}</span>
-            </header>
-
-            <p
-              dangerouslySetInnerHTML={{ __html: unescape(comment.body_html) }}
-            />
-          </article>
-        ))}
-      </section>
-    </article>
+              <p
+                dangerouslySetInnerHTML={{
+                  __html: unescape(comment.body_html)
+                }}
+              />
+            </article>
+          ))}
+        </section>
+      </article>
+    </Link>
   );
 };
 export default ArticlePreview;

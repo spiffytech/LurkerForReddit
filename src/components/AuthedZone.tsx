@@ -1,18 +1,22 @@
-import * as React from 'react';
-import { useHistory } from 'react-router-dom';
+import * as React from "react";
+import { useHistory, useParams } from "react-router-dom";
 
-import { mkReddit } from '../lib/reddit';
-import { useRedditAuth } from '../lib/redditAuth'
+import { mkReddit } from "../lib/reddit";
+import { useRedditAuth } from "../lib/redditAuth";
 
 interface AuthedZoneProps {
-  component: React.ComponentType<{reddit: ReturnType<typeof mkReddit>}>;
+  component: React.ComponentType<{
+    reddit: ReturnType<typeof mkReddit>;
+    params: { [key: string]: string };
+  }>;
 }
 
-const AuthedZone: React.FC<AuthedZoneProps> = (props) => {
-  const history = useHistory()
+const AuthedZone: React.FC<AuthedZoneProps> = props => {
+  const history = useHistory();
+  const params = useParams();
 
   const { component: Component } = props;
-  const { reddit, redditError } = useRedditAuth(() => history.push('/'));
+  const { reddit, redditError } = useRedditAuth(() => history.push("/"));
 
   if (redditError) {
     return <p>{redditError}</p>;
@@ -22,6 +26,6 @@ const AuthedZone: React.FC<AuthedZoneProps> = (props) => {
     return <p>Loading your session...</p>;
   }
 
-  return <Component reddit={reddit} />
-}
+  return <Component reddit={reddit} params={params} />;
+};
 export default AuthedZone;

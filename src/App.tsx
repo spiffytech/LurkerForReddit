@@ -11,6 +11,10 @@ const App: React.FC = () => {
     <main className="bg-gray-500 h-screen overflow-auto">
       <Router>
         <Switch>
+          <Route path='/r/:subreddit/:id'>
+            <AuthedZone component={Home} />
+          </Route>
+
           <Route path='/'>
             <AuthedZone component={Home} />
           </Route>
