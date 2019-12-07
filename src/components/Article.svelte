@@ -42,11 +42,11 @@
   <article
     class="flex-100 flex flex-col justify-end mb-3" style='min-height: 200px;'>
     <header class="border rounded-lg p-2 bg-white">
-      <p class="flex justify-between">
-        <span>{article.title}</span>
-        <span class="whitespace-no-wrap ml-5">
+      <p>
+        <span class="whitespace-no-wrap ml-5 float-right">
           &udarr; {article.score} / 🗩 {article.num_comments}
         </span>
+        <span>{article.title}</span>
       </p>
       <p class="text-gray-500 text-xs">({article.domain})</p>
       <div class="mt-2">
