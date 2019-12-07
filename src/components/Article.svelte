@@ -45,7 +45,7 @@
       <p class="flex justify-between">
         <span>{article.title}</span>
         <span class="whitespace-no-wrap ml-5">
-          {article.score} / {article.num_comments}
+          &udarr; {article.score} / 🗩 {article.num_comments}
         </span>
       </p>
       <p class="text-gray-500 text-xs">({article.domain})</p>

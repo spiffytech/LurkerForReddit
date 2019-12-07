@@ -13,7 +13,7 @@
   class:pb-3={!last}>
   <p class="flex justify-between">
     <span class="text-gray-700 italic">/u/{comment.data.author}</span>
-    <span class="text-gray-700 italic">{comment.data.score}</span>
+    <span class="text-gray-700 italic">&udarr; {comment.data.score}</span>
   </p>
   <p>
     {@html unescape(comment.data.body_html)}
