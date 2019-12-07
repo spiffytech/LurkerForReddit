@@ -37,9 +37,11 @@
 
   <Embed article={article.article} />
 
-  {#each article.comments as comment (comment.data.id)}
-    <Comment {comment} />
-  {/each}
+  <div class="m-3 p-3 rounded-lg bg-gray-300">
+    {#each article.comments as comment (comment.data.id)}
+      <Comment {comment} />
+    {/each}
+  </div>
 {:catch ex}
   <p>{ex.message}</p>
 {/await}
