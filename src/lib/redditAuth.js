@@ -45,7 +45,7 @@ export function retrieveAccessToken() {
  * @param {{token: string; expires: number; refreshToken: string}} token
  */
 export async function refreshToken(token) {
-  const response = await axios.post('https://www.reddit.com/api/v1/access_token', `grant_type=refresh_token&refresh_token=${token.refreshToken}`, {auth: {username: 'yswjAIdT1IQwmA', password: ''}})
+  const response = await axios.post('https://www.reddit.com/api/v1/access_token', `grant_type=refresh_token&refresh_token=${token.refreshToken}`, {auth: {username: process.env.REDDIT_APP_ID || '', password: ''}})
   console.log('Refreshed data:', response.data);
   token.token = response.data.access_token;
   token.expires = Date.now() + response.data.expires_in * 1000;

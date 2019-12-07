@@ -52,7 +52,7 @@ module.exports = {
 		new MiniCssExtractPlugin({
 			filename: '[name].css'
 		}),
-        new webpack.EnvironmentPlugin(['REDDIT_APP_ID', 'APP_URL']),
+        ...(prod ? [new webpack.EnvironmentPlugin(['REDDIT_APP_ID', 'APP_URL'])] : []),
 		new Dotenv()
 	],
 	devtool: prod ? false: 'source-map'
