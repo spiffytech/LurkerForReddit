@@ -1,7 +1,18 @@
 <script>
   import unescape from "lodash/unescape";
+  import { onMount } from 'svelte';
 
   export let comment;
+
+  let commentRef = null;
+
+  onMount(() => {
+    const ps = commentRef.querySelectorAll('p');
+    ps.forEach(p => p.className += 'break-words');
+
+    const as = commentRef.querySelectorAll('a');
+    as.forEach(a => a.className += 'underline');
+  });
 </script>
 
 <div class="pl-3">
@@ -11,7 +22,9 @@
       <span>&udarr; {comment.data.score}</span>
     </header>
 
-    {@html unescape(comment.data.body_html)}
+    <div style="display: contents;" bind:this={commentRef}>
+      {@html unescape(comment.data.body_html)}
+    </div>
   </article>
 
   {#if comment.data.replies}
