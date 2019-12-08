@@ -29,6 +29,8 @@
     if (resolutions.length === 0) return article.preview.images[0].source.url;
     return resolutions[resolutions.length - 1].url;
   }
+
+  let loadedImages = {};
 </script>
 
 <style>
@@ -53,10 +55,19 @@
         {#if getPreview()}
           <img
             class="rounded-lg"
-            src={unescape(getPreview())}
-            alt={article.title} />
+            on:load={() => loadedImages = {...loadedImages, [getPreview()]: true}}
+            src={hasBeenVisible ? unescape(getPreview()) : null}
+            style={loadedImages[getPreview()] ? '' : 'padding-bottom: 100%'}
+            alt={article.title}
+            />
         {:else if article.thumbnail !== 'self'}
-          <img src={article.thumbnail} alt={article.title} />
+          <img
+            src={hasBeenVisible ? article.thumbnail : null}
+            class="rounded-lg"
+            alt={article.title}
+            on:load={() => loadedImages = {...loadedImages, [article.thumbnail]: true}}
+            style={loadedImages[article.thumbnail] ? '' : 'padding-bottom: 100%'}
+          />
         {/if}
       </div>
       <p>{article.subreddit_name_prefixed}</p>

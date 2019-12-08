@@ -11,6 +11,8 @@
   let selftextRef;
 
   onMount(() => {
+    if (!selftextRef) return;
+
     const uls = selftextRef.querySelectorAll('ul');
     uls.forEach(ul => ul.className += 'list-disc list-inside');
 
