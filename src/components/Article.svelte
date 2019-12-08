@@ -50,10 +50,10 @@
 
 <VisibilityGuard
   let:hasBeenVisible
-  onVisible={() => {
-    loadComments();
-    markRead(article);
-  }}>
+  onVisible={new Map([
+    [100, () => loadComments()],
+    [2000, () => markRead(article)]
+  ])}>
   <article
     class="flex-100 flex flex-col justify-end mb-3">
     <header
