@@ -37,7 +37,10 @@ export async function post(path, token, body) {
 
 export function getEmbedType(data) {
   if (data.post_hint === "image") return "image";
-  else if (data.post_hint === "link") return "link";
+  else if (data.post_hint === "link") {
+    if (data.domain === 'imgur.com') return 'imgur';
+    else return "link";
+  }
   else if (data.selftext) return "self";
   else if (data.post_hint === "hosted:video") return "video";
 }

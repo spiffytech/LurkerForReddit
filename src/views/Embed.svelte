@@ -30,4 +30,6 @@
   <a href={article.url} target="blank">🌎{article.title}</a>
 {:else if embedType === 'video'}
   <video src={article.media.reddit_video.fallback_url} autoplay loop controls />
+{:else if embedType === 'imgur'}
+  <video src={article.url.replace(/\.gifv$/, '.mp4')} autoplay loop controls />
 {/if}
