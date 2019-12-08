@@ -14,8 +14,6 @@
 
   const accessToken = getContext("accessToken");
 
-  $: console.log(params);
-
   let footerParent = null;
 
   async function getHomepage() {
@@ -23,12 +21,6 @@
       `?limit=25${$scrollEnd ? `&after=${$scrollEnd}` : ""}`,
       accessToken
     )).data;
-    console.log(
-      "readness",
-      response.children.map(article =>
-        localStorage.getItem(`read:${article.data.id}`)
-      )
-    );
     const unreadEntries = response.children.filter(
       article => localStorage.getItem(`read:${article.data.id}`) === null
     );

@@ -41,13 +41,6 @@
   let loadedImages = {};
 </script>
 
-<style>
-  article img {
-    width: 100%;
-    height: auto;
-  }
-</style>
-
 <VisibilityGuard
   let:hasBeenVisible
   onVisible={() => {
@@ -68,7 +61,7 @@
       <div class="mt-2">
         {#if getPreview()}
           <img
-            class="rounded-lg"
+            class="rounded-lg w-full h-auto"
             on:load={() => (loadedImages = { ...loadedImages, [getPreview()]: true })}
             src={hasBeenVisible ? unescape(getPreview()) : null}
             style={loadedImages[getPreview()] ? '' : 'padding-bottom: 100%'}
@@ -76,7 +69,7 @@
         {:else if article.thumbnail !== 'self'}
           <img
             src={hasBeenVisible ? article.thumbnail : null}
-            class="rounded-lg"
+            class="rounded-lg w-full h-auto"
             alt={article.title}
             on:load={() => (loadedImages = { ...loadedImages, [article.thumbnail]: true })}
             style={loadedImages[article.thumbnail] ? '' : 'padding-bottom: 100%'} />
