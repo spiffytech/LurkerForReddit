@@ -19,10 +19,10 @@
   let footerParent = null;
 
   async function getHomepage() {
-    const response = await libreddit.get(
+    const response = (await libreddit.get(
       `?limit=25${$scrollEnd ? `&after=${$scrollEnd}` : ""}`,
       accessToken
-    );
+    )).data;
     console.log(
       "readness",
       response.children.map(article =>

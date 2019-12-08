@@ -11,7 +11,7 @@
 
   const accessToken = getContext("accessToken");
 
-  $: articleP = libreddit.getComments(subreddit, articleId);
+  $: articleP = libreddit.getComments(accessToken, subreddit, articleId);
 
   $: articleP.then(article => console.log("a", article.article));
 </script>

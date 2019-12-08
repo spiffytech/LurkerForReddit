@@ -1,13 +1,15 @@
 <script>
-  import unescape from 'lodash/unescape';
-  import { onMount } from "svelte";
+  import unescape from "lodash/unescape";
+  import { getContext, onMount } from "svelte";
 
-  import CommentPreview from './CommentPreview.svelte';
-  import VisibilityGuard from './VisibilityGuard.svelte';
+  import CommentPreview from "./CommentPreview.svelte";
+  import VisibilityGuard from "./VisibilityGuard.svelte";
 
   import * as libreddit from "../lib/reddit";
 
   export let article;
+
+  const accessToken = getContext('accessToken');
 
   let comments = [];
   let commentsLoaded = false;
@@ -16,6 +18,7 @@
     if (comments.length > 0) return;
 
     const loadedComments = await libreddit.getComments(
+      accessToken,
       article.subreddit,
       article.id
     );
@@ -24,7 +27,12 @@
   }
 
   function getPreview() {
-    if (!article.preview || !article.preview.enabled || !article.preview.images.length) return;
+    if (
+      !article.preview ||
+      !article.preview.enabled ||
+      !article.preview.images.length
+    )
+      return;
     const resolutions = article.preview.images[0].resolutions;
     if (resolutions.length === 0) return article.preview.images[0].source.url;
     return resolutions[resolutions.length - 1].url;
@@ -40,9 +48,15 @@
   }
 </style>
 
-<VisibilityGuard let:hasBeenVisible onVisible={() => { loadComments(); localStorage.setItem(`read:${article.id}`, JSON.stringify(true))}}>
+<VisibilityGuard
+  let:hasBeenVisible
+  onVisible={() => {
+    loadComments();
+    localStorage.setItem(`read:${article.id}`, JSON.stringify(true));
+  }}>
   <article
-    class="flex-100 flex flex-col justify-end mb-3" style='min-height: 200px;'>
+    class="flex-100 flex flex-col justify-end mb-3"
+    style="min-height: 200px;">
     <header class="border rounded-lg p-2 bg-white">
       <p>
         <span class="whitespace-no-wrap ml-5 float-right">
@@ -55,19 +69,17 @@
         {#if getPreview()}
           <img
             class="rounded-lg"
-            on:load={() => loadedImages = {...loadedImages, [getPreview()]: true}}
+            on:load={() => (loadedImages = { ...loadedImages, [getPreview()]: true })}
             src={hasBeenVisible ? unescape(getPreview()) : null}
             style={loadedImages[getPreview()] ? '' : 'padding-bottom: 100%'}
-            alt={article.title}
-            />
+            alt={article.title} />
         {:else if article.thumbnail !== 'self'}
           <img
             src={hasBeenVisible ? article.thumbnail : null}
             class="rounded-lg"
             alt={article.title}
-            on:load={() => loadedImages = {...loadedImages, [article.thumbnail]: true}}
-            style={loadedImages[article.thumbnail] ? '' : 'padding-bottom: 100%'}
-          />
+            on:load={() => (loadedImages = { ...loadedImages, [article.thumbnail]: true })}
+            style={loadedImages[article.thumbnail] ? '' : 'padding-bottom: 100%'} />
         {/if}
       </div>
       <p>{article.subreddit_name_prefixed}</p>

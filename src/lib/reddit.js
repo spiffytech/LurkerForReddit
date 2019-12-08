@@ -8,13 +8,12 @@ import * as redditAuth from "./redditAuth";
  * @param {{token: string, expires: number}} token
  */
 export async function get(path, token) {
-  console.log("token", token);
   if (token.expires <= Date.now()) await redditAuth.refreshToken(token);
   const response = await axios.get(`https://oauth.reddit.com/${path}`, {
     headers: { Authorization: `bearer ${token.token}` }
   });
 
-  return response.data.data;
+  return response.data;
 }
 
 /**
@@ -47,13 +46,12 @@ export function getEmbedType(data) {
  * @param {string} subreddit
  * @param {string} id
  */
-export async function getComments(subreddit, id) {
-  const response = await axios.get(
-    `https://www.reddit.com/r/${subreddit}/comments/${id}/.json`
-  );
+export async function getComments(token, subreddit, id) {
+  const path = `r/${subreddit}/comments/${id}/.json`;
+  const response = await get(path, token);
   return {
-    article: response.data[0].data.children[0].data,
-    comments: response.data[1].data.children
+    article: response[0].data.children[0].data,
+    comments: response[1].data.children
   };
 }
 

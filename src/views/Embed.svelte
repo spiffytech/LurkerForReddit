@@ -23,7 +23,7 @@
 </script>
 
 {#if embedType === 'image'}
-  <img src={article.url} alt={article.title} />
+  <img src={article.url} alt={article.title} class="rounded-lg" />
 {:else if embedType === 'self'}
   <p class="bg-white rounded-lg p-3" bind:this={selftextRef}>{@html unescape(article.selftext_html)}</p>
 {:else if embedType === 'link'}
