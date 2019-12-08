@@ -11,6 +11,8 @@
 
   const accessToken = getContext('accessToken');
 
+  let articleIsRead = localStorage.getItem(`read:${article.id}`) !== null;
+
   let comments = [];
   let commentsLoaded = false;
 
@@ -38,6 +40,11 @@
     return resolutions[resolutions.length - 1].url;
   }
 
+  function markRead(article) {
+    localStorage.setItem(`read:${article.id}`, JSON.stringify(true));
+    articleIsRead = true;
+  }
+
   let loadedImages = {};
 </script>
 
@@ -45,12 +52,15 @@
   let:hasBeenVisible
   onVisible={() => {
     loadComments();
-    localStorage.setItem(`read:${article.id}`, JSON.stringify(true));
+    markRead(article);
   }}>
   <article
-    class="flex-100 flex flex-col justify-end mb-3"
-    style="min-height: 200px;">
-    <header class="border rounded-lg p-2 bg-white">
+    class="flex-100 flex flex-col justify-end mb-3">
+    <header
+      class="border rounded-lg p-2"
+      class:bg-white={!articleIsRead}
+      class:bg-gray-200={articleIsRead}
+    >
       <p>
         <span class="whitespace-no-wrap ml-5 float-right">
           &udarr; {article.score} / 🗩 {article.num_comments}
