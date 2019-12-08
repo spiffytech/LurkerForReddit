@@ -16,16 +16,18 @@
 
   let footerParent = null;
 
-  async function getHomepage() {
+  async function getHomepage(after=$scrollEnd) {
     const response = (await libreddit.get(
-      `?limit=25${$scrollEnd ? `&after=${$scrollEnd}` : ""}`,
+      `?limit=25${after ? `&after=${after}` : ""}`,
       accessToken
     )).data;
     const unreadEntries = response.children.filter(
       article => localStorage.getItem(`read:${article.data.id}`) === null
     );
-    // if (unreadEntries.length === 0) return getHomepage();
-    $feed = [...$feed, ...response.children];
+    if (unreadEntries.length === 0) {
+      return getHomepage(response.after);
+    }
+    $feed = [...$feed, ...unreadEntries];
     $scrollEnd = response.after;
   }
 
