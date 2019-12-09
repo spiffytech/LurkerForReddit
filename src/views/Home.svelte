@@ -64,7 +64,7 @@
   }
 </script>
 
-<nav class="flex">
+<nav class="flex justify-between items-center p-3" style="height: 5vh;">
   <select value={params.subreddit ? '/r/' + params.subreddit : null} on:change={event => event.target.value === 'null' ? page('/') : page(event.target.value)} class="border">
     <option value={null}>Home</option>
     {#each mySubscriptions as subscription (subscription.url)}
@@ -77,20 +77,20 @@
   {/if}
 </nav>
 <div class="flex">
-  <div class="bg-gray-500 flex-1 h-screen overflow-scroll p-3">
+  <div class="bg-gray-500 flex-1 overflow-scroll p-3" style="height: 95vh;">
       {#each $feed as child (child.data.id)}
         <a href={`#!${makeUrlBase()}?subreddit=${child.data.subreddit}&id=${child.data.id}`}>
           <Article article={child.data} />
         </a>
       {:else}
-      <p>Loading homepage...</p>
+        <p>Loading homepage...</p>
       {/each}
     <div bind:this={footerParent}>
       <div class="italic text-grey-500">Loading more content...</div>
     </div>
   </div>
 
-  <div class="flex-1 h-screen overflow-scroll p-3 bg-gray-500">
+  <div class="flex-1 overflow-scroll p-3 bg-gray-500" style="height: 95vh;">
     {#if queryString.subreddit && queryString.id}
       <FullArticle
         articleId={queryString.id}
