@@ -23,6 +23,7 @@
     <header class="text-lg">{article.article.title}</header>
   </a>
 
+<!--
   <button
     class="bg-white rounded-full text-3xl px-3 text-center align-middle"
     on:click|preventDefault={() => libreddit.vote(accessToken, article.article.name, 1)}>
@@ -34,6 +35,7 @@
     on:click|preventDefault={() => libreddit.vote(accessToken, article.article.name, -1)}>
     <span>&downarrow;</span>
   </button>
+  -->
 
   <Embed article={article.article} />
 
