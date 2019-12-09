@@ -86,7 +86,7 @@
         <p>Loading homepage...</p>
       {/each}
     <div bind:this={footerParent}>
-      <div class="italic text-grey-500">Loading more content...</div>
+      <div class="italic text-grey-500" on:click={() => getHomepage()}>Load more content</div>
     </div>
   </div>
 
