@@ -8,6 +8,12 @@ import * as redditAuth from "./redditAuth";
  * @param {{token: string, expires: number}} token
  */
 export async function get(path, token) {
+  if (!token.token) {
+    const response = await axios.get(`https://oauth.reddit.com/${path}`, {headers: {Authorization: 'bearer'}})
+    console.log('resp', path, response);
+    return response.data;
+  }
+
   if (token.expires <= Date.now()) await redditAuth.refreshToken(token);
   const response = await axios.get(`https://oauth.reddit.com/${path}`, {
     headers: { Authorization: `bearer ${token.token}` }
@@ -22,7 +28,7 @@ export async function get(path, token) {
  * @param {any} body
  */
 export async function post(path, token, body) {
-  console.log("token", token);
+  if (!token.token) throw new Error('Cannot POST to Reddit when unauthenticated');
   if (token.expires <= Date.now()) await redditAuth.refreshToken(token);
   const response = await axios.post(
     `https://oauth.reddit.com/${path}`,

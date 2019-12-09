@@ -28,7 +28,7 @@
 
   async function getHomepage(after = $scrollEnd) {
     const response = (await libreddit.get(
-      `${makeUrlBase()}?limit=25${after ? `&after=${after}` : ""}`,
+      `${makeUrlBase()}/.json?limit=25${after ? `&after=${after}` : ""}`,
       accessToken
     )).data;
     const unreadEntries = response.children.filter(
@@ -49,8 +49,10 @@
     });
     footerObserver.observe(footerParent);
 
-    const subs = await libreddit.getMySubscriptions(accessToken);
-    mySubscriptions = subs.data.children.map(child => ({title: child.data.title, url: child.data.url}));
+    if (accessToken.token) {
+      const subs = await libreddit.getMySubscriptions(accessToken);
+      mySubscriptions = subs.data.children.map(child => ({title: child.data.title, url: child.data.url}));
+    }
   });
 
   $: {
@@ -62,13 +64,17 @@
   }
 </script>
 
-<nav>
+<nav class="flex">
   <select value={params.subreddit ? '/r/' + params.subreddit : null} on:change={event => event.target.value === 'null' ? page('/') : page(event.target.value)} class="border">
     <option value={null}>Home</option>
     {#each mySubscriptions as subscription (subscription.url)}
       <option value={subscription.url} selected={subscription.url === '/r/' + params.subreddit + '/'}>{subscription.url} - {subscription.title}</option>
     {/each}
   </select>
+
+  {#if !accessToken.token}
+    <a href={`https://www.reddit.com/api/v1/authorize?client_id=${process.env.REDDIT_APP_ID}&state=0.24722490017302334&redirect_uri=${process.env.APP_URL}&response_type=code&scope=identity history mysubreddits read save submit subscribe vote&duration=permanent`}>Log In</a>
+  {/if}
 </nav>
 <div class="flex">
   <div class="bg-gray-500 flex-1 h-screen overflow-scroll p-3">
