@@ -1,5 +1,6 @@
 <script>
   import page from "page";
+  import queryString from 'query-string';
   import { setContext } from "svelte";
 
   import Home from "./views/Home.svelte";
@@ -9,16 +10,19 @@
 
   let component = null;
   let params = null;
+  let query = null;
 
   function setRoute(component_) {
     return function(params_) {
       component = component_;
       params = params_;
+      query = queryString.parse(params.querystring);
+      console.log('params', params_);
     };
   }
 
   page("/", setRoute(Home));
-  page("/r/:subreddit/:id", setRoute(Home));
+  page("/r/:subreddit", setRoute(Home));
   page("*", setRoute(FourOhFour));
   page({hashbang: true});
 
@@ -59,7 +63,7 @@ $: setContext("accessToken", accessToken);
   <p>{error}</p>
 {:else}
   {#if accessToken && component}
-    <svelte:component this={component} {params} />
+    <svelte:component this={component} params={params.params} queryString={query} />
   {:else}
     <p>Loading the app...</p>
   {/if}

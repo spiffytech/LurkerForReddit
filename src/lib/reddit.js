@@ -68,3 +68,7 @@ export async function getComments(token, subreddit, id) {
 export async function vote(token, fullName, dir) {
   return post("api/vote", token, { dir, id: fullName });
 }
+
+export async function getMySubscriptions(token) {
+  return get('subreddits/mine/subscriber', token);
+}

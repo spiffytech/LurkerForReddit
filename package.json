@@ -27,6 +27,7 @@
     "dialog-polyfill": "^0.5.0",
     "lodash": "^4.17.15",
     "page": "^1.11.5",
+    "query-string": "^6.9.0",
     "querystring": "^0.2.0"
   }
 }
