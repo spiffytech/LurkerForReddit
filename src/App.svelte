@@ -54,6 +54,13 @@
   }
 
 $: setContext("accessToken", accessToken);
+
+// Google Analytics
+window.dataLayer = window.dataLayer || [];
+function gtag() { dataLayer.push(arguments); }
+gtag('js', new Date());
+
+gtag('config', process.env.GOOGLE_ANALYTICS_TRACKING_ID);
 </script>
 
 {#if error}
@@ -65,3 +72,7 @@ $: setContext("accessToken", accessToken);
     <p>Loading the app...</p>
   {/if}
 {/if}
+
+<footer>
+  <script async src={`https://www.googletagmanager.com/gtag/js?id=${process.env.GOOGLE_ANALYTICS_TRACKING_ID}`}></script>
+</footer>
