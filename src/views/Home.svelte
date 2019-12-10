@@ -16,7 +16,7 @@
   const accessToken = getContext("accessToken");
 
   let mySubscriptions = [];
-  let loadedSubreddit = null;
+  let loadedSubreddit = params.subreddit;
 
   let footerParent = null;
 
