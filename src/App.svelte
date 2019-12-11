@@ -1,4 +1,5 @@
 <script>
+  /* global process dataLayer */
   import page from "page";
   import queryString from 'query-string';
   import { setContext } from "svelte";
@@ -68,6 +69,7 @@ function gtag() { dataLayer.push(arguments); }
 gtag('js', new Date());
 
 gtag('config', process.env.GOOGLE_ANALYTICS_TRACKING_ID);
+const googleAnalyticsTrackingId = process.env.GOOGLE_ANALYTICS_TRACKING_ID;
 </script>
 
 {#if error}
@@ -81,5 +83,5 @@ gtag('config', process.env.GOOGLE_ANALYTICS_TRACKING_ID);
 {/if}
 
 <footer>
-  <script async src={`https://www.googletagmanager.com/gtag/js?id=${process.env.GOOGLE_ANALYTICS_TRACKING_ID}`}></script>
+  <script async src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsTrackingId}`}></script>
 </footer>

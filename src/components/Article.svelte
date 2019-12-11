@@ -1,6 +1,6 @@
 <script>
   import unescape from "lodash/unescape";
-  import { getContext, onMount } from "svelte";
+  import { getContext } from "svelte";
 
   import CommentPreview from "./CommentPreview.svelte";
   import VisibilityGuard from "./VisibilityGuard.svelte";
@@ -14,7 +14,6 @@
   let articleIsRead = localStorage.getItem(`read:${article.id}`) !== null;
 
   let comments = [];
-  let commentsLoaded = false;
 
   async function loadComments() {
     if (comments.length > 0) return;
@@ -24,8 +23,8 @@
       article.subreddit,
       article.id
     );
+    // eslint-disable-next-line require-atomic-updates
     comments = loadedComments.comments;
-    commentsLoaded = true;
   }
 
   function getPreview() {
