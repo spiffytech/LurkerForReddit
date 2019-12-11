@@ -3,6 +3,8 @@ import * as querystring from "querystring";
 
 import * as redditAuth from "./redditAuth";
 
+export const permissions = 'identity history mysubreddits read save submit subscribe vote';
+
 /**
  * @param {string} path
  * @param {{token: string, expires: number}} token

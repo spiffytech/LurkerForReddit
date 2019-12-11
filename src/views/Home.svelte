@@ -73,7 +73,7 @@
   </select>
 
   {#if !accessToken.token}
-    <a href={`https://www.reddit.com/api/v1/authorize?client_id=${process.env.REDDIT_APP_ID}&state=0.24722490017302334&redirect_uri=${process.env.APP_URL}&response_type=code&scope=identity history mysubreddits read save submit subscribe vote&duration=permanent`}>Log In</a>
+    <a href={`https://www.reddit.com/api/v1/authorize?client_id=${process.env.REDDIT_APP_ID}&state=0.24722490017302334&redirect_uri=${process.env.APP_URL}&response_type=code&scope=${libreddit.permissions}&duration=permanent`}>Log In</a>
   {/if}
 </nav>
 <div class="flex">
