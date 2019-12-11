@@ -72,9 +72,13 @@
     {/each}
   </select>
 
-  {#if !accessToken.token}
-    <a href={`https://www.reddit.com/api/v1/authorize?client_id=${process.env.REDDIT_APP_ID}&state=0.24722490017302334&redirect_uri=${process.env.APP_URL}&response_type=code&scope=${libreddit.permissions}&duration=permanent`}>Log In</a>
-  {/if}
+  <div>
+    {#if !accessToken.token}
+      <a class="border" href={`https://www.reddit.com/api/v1/authorize?client_id=${process.env.REDDIT_APP_ID}&state=0.24722490017302334&redirect_uri=${process.env.APP_URL}&response_type=code&scope=${libreddit.permissions}&duration=permanent`}>Log In</a>
+    {/if}
+
+    <a href="mailto:hello@spiffy.tech?subject=%5BLurker%5D%20Hello!">Say hello!</a>
+  </div>
 </nav>
 <div class="flex">
   <div class="bg-gray-500 flex-1 overflow-scroll p-3" style="height: 95vh;">
