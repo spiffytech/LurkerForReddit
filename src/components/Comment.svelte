@@ -1,24 +1,32 @@
 <script>
   import unescape from "lodash/unescape";
-  import { afterUpdate } from 'svelte';
+  import { afterUpdate } from "svelte";
 
   export let comment;
+  export let isPreview = false;
 
   let commentRef = null;
 
   function addClassToEls(ref, selector, classes) {
     const els = ref.querySelectorAll(selector);
-    els.forEach(el => el.className += ' ' + classes);
+    els.forEach(el => (el.className += " " + classes));
   }
 
   afterUpdate(() => {
-    addClassToEls(commentRef, 'p', 'break-words');
-    addClassToEls(commentRef, 'a', 'underline');
-    addClassToEls(commentRef, 'blockquote', 'pl-2 border-l-2 border-gray-500 border-dashed');
+    addClassToEls(commentRef, "p", "break-words mb-3");
+    addClassToEls(commentRef, "a", "underline");
+    addClassToEls(
+      commentRef,
+      "blockquote",
+      "pl-2 border-l-2 border-gray-500 border-dashed"
+    );
   });
 </script>
 
-<div class="pl-3 border-l border-black">
+<div
+  class:pl-3={!isPreview}
+  class:border-l={!isPreview}
+  class:border-black={!isPreview}>
   <article class="mb-5">
     <header class="flex justify-between text-gray-700 italic">
       <span>{comment.data.author}</span>
@@ -30,7 +38,7 @@
     </div>
   </article>
 
-  {#if comment.data.replies}
+  {#if comment.data.replies && !isPreview}
     {#each comment.data.replies.data.children.filter(c => c.kind !== 'more') as subcomment (subcomment.data.id)}
       <svelte:self comment={subcomment} />
     {/each}

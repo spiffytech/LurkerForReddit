@@ -2,7 +2,7 @@
   import unescape from "lodash/unescape";
   import { getContext } from "svelte";
 
-  import CommentPreview from "./CommentPreview.svelte";
+  import Comment from "./Comment.svelte";
   import VisibilityGuard from "./VisibilityGuard.svelte";
 
   import * as libreddit from "../lib/reddit";
@@ -88,7 +88,9 @@
     </header>
     <section class="mx-3 bg-gray-300 rounded-b-lg">
       {#each comments.slice(0, 2) as comment, i (comment.data.id)}
-        <CommentPreview {comment} last={i === 1} />
+        <div class="px-3">
+          <Comment {comment} isPreview={true} />
+        </div>
       {/each}
     </section>
   </article>
