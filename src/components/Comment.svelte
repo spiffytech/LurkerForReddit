@@ -15,7 +15,7 @@
   });
 </script>
 
-<div class="pl-3">
+<div class="pl-3 border-l border-black">
   <article class="mb-5">
     <header class="flex justify-between text-gray-700 italic">
       <span>{comment.data.author}</span>
