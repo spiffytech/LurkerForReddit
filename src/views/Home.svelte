@@ -67,7 +67,7 @@
 <nav class="flex justify-between items-center p-3" style="height: 5vh;">
   <select value={params.subreddit ? '/r/' + params.subreddit : null} on:change={event => event.target.value === 'null' ? page('/') : page(event.target.value)} class="border">
     <option value={null}>Home</option>
-    {#each mySubscriptions as subscription (subscription.url)}
+    {#each mySubscriptions.sort((a, b) => a.url < b.url ? -1 : 1) as subscription (subscription.url)}
       <option value={subscription.url} selected={subscription.url === '/r/' + params.subreddit + '/'}>{subscription.url} - {subscription.title}</option>
     {/each}
   </select>
