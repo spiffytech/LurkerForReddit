@@ -13,7 +13,7 @@
 
   $: articleP = libreddit.getComments(accessToken, subreddit, articleId);
 
-  $: articleP.then(article => console.log("a", article.article));
+  $: articleP.then(article => console.log("article", article.article));
 </script>
 
 {#await articleP}
@@ -37,7 +37,13 @@
   </button>
   -->
 
-  <Embed article={article.article} />
+  <div class="bg-white rounded-lg p-3">
+    <Embed article={article.article} />
+
+    <div class="flex text-gray-500 text-xs">
+      <span>/u/{article.article.author}</span>
+    </div>
+  </div>
 
   <div class="m-3 p-3 rounded-lg bg-gray-300">
     {#each article.comments as comment (comment.data.id)}

@@ -25,15 +25,17 @@
 
 <div
   class:pl-3={!isPreview}
-  class:border-l={!isPreview}
+  class:border-l={!isPreview && comment.data.depth !== 0}
   class:border-black={!isPreview}>
-  <article class="mb-5">
+  <article
+    class="mb-5"
+    on:click|preventDefault={() => console.log(comment.data)}>
     <header class="flex justify-between text-gray-700 italic">
-      <span>{comment.data.author}</span>
+      <span class:font-bold={comment.data.is_submitter}>{comment.data.author}</span>
       <span>&udarr; {comment.data.score}</span>
     </header>
 
-    <div style="display: contents;" bind:this={commentRef}>
+    <div style="display: contents;" class:text-gray-500={comment.data.score < -4} bind:this={commentRef}>
       {@html unescape(comment.data.body_html)}
     </div>
   </article>

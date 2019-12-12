@@ -28,7 +28,7 @@
   <!-- the png suffix is arbitrary, any extension seems to work. -->
   <img src={article.url + '.png'} alt={article.title} class="rounded-lg" />
 {:else if embedType === 'self'}
-  <p class="bg-white rounded-lg p-3" bind:this={selftextRef}>{@html unescape(article.selftext_html)}</p>
+  <p>{@html unescape(article.selftext_html)}</p>
 {:else if embedType === 'link'}
   <a href={article.url} target="blank">🌎{article.title}</a>
 {:else if embedType === 'video'}
